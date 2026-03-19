@@ -180,19 +180,10 @@ function initModal() {
   document.getElementById('btnCancelEdit')?.addEventListener('click', () => closeModal('editModal'));
   document.getElementById('btnSaveEdit')?.addEventListener('click', () => {
     const modal = document.getElementById('editModal');
-    const idx   = modal._editIndex;
-    if (idx === undefined || idx < 0) return;
-    Store.updateMember(idx, {
-      nombres:   document.getElementById('e-nombres').value.trim(),
-      apellidos: document.getElementById('e-apellidos').value.trim(),
-      telefono:  document.getElementById('e-telefono').value.trim(),
-      email:     document.getElementById('e-email').value.trim(),
-      plan:      document.getElementById('e-plan').value,
-      estado:    document.getElementById('e-estado').value,
-      notas:     document.getElementById('e-notas').value.trim(),
-    });
+    const id    = modal._editId;
+    if (!id) return;
     closeModal('editModal');
-    showToast('💾 Cambios guardados.');
+    PageMiembros.saveEdit(id);
   });
   document.getElementById('editModal')?.addEventListener('click', e => {
     if (e.target === document.getElementById('editModal')) closeModal('editModal');

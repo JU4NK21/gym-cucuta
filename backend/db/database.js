@@ -1,10 +1,23 @@
 const Database = require('better-sqlite3');
 const path     = require('path');
+const fs       = require('fs');
 const bcrypt   = require('bcryptjs');
 
-const DB_PATH = path.join(__dirname, 'gymcucuta.db');
-const db      = new Database(DB_PATH);
+/* ── Usar volumen persistente de Railway si existe,
+      si no, usar carpeta local ── */
+const DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH
+  ? process.env.RAILWAY_VOLUME_MOUNT_PATH
+  : path.join(__dirname);
 
+// Crear directorio si no existe
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+const DB_PATH = path.join(DATA_DIR, 'gymcucuta.db');
+console.log('📁 Base de datos en:', DB_PATH);
+
+const db = new Database(DB_PATH);
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
@@ -38,13 +51,26 @@ async function inicializar() {
       fecha      TEXT NOT NULL DEFAULT (datetime('now')),
       ip         TEXT
     );
+    CREATE TABLE IF NOT EXISTS miembros_gym (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      nombres         TEXT NOT NULL,
+      apellidos       TEXT NOT NULL,
+      cedula          TEXT NOT NULL UNIQUE,
+      telefono        TEXT,
+      email           TEXT,
+      plan            TEXT,
+      vence           TEXT,
+      estado          TEXT NOT NULL DEFAULT 'Activo',
+      notas           TEXT,
+      fecha_registro  TEXT NOT NULL DEFAULT (date('now'))
+    );
   `);
 
   const admin = db.prepare('SELECT id FROM usuarios WHERE email = ?').get('admin@gymcucuta.com');
   if (!admin) {
     const hash = bcrypt.hashSync('Admin1234!', 12);
     db.prepare(`INSERT INTO usuarios (nombre,apellido,email,password_hash,rol,estado) VALUES (?,?,?,?,'admin','activo')`)
-      .run('Administrador','Principal','admin@gymcucuta.com', hash);
+      .run('Administrador', 'Principal', 'admin@gymcucuta.com', hash);
     console.log('✅ Admin creado: admin@gymcucuta.com / Admin1234!');
   }
   console.log('✅ Base de datos lista');
