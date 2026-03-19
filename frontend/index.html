@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>App Gym Cúcuta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+  <link rel="stylesheet" href="css/navbar.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <style>
+    /* Visibilidad inicial: solo login visible */
+    #loginPage          { display: flex   !important; }
+    #appPage            { display: none   !important; }
+    #appPage.visible    { display: flex   !important; }
+    #loginPage.hidden   { display: none   !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════ LOGIN / REGISTRO ═══════ -->
+  <div id="loginPage">
+    <div class="login-bg-grid"></div>
+    <div class="login-glow"></div>
+    <div class="login-card">
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar Sesión</button>
+        <button class="auth-tab" data-tab="registro">Registrarse</button>
+      </div>
+
+      <div class="login-logo">
+        <div class="logo-emblem">
+          <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+            <rect x="13" y="22" width="22" height="4" rx="2" fill="white"/>
+            <rect x="4"  y="15" width="5"  height="18" rx="2.5" fill="white"/>
+            <rect x="10" y="18" width="3"  height="12" rx="1.5" fill="rgba(255,255,255,0.7)"/>
+            <rect x="35" y="18" width="3"  height="12" rx="1.5" fill="rgba(255,255,255,0.7)"/>
+            <rect x="39" y="15" width="5"  height="18" rx="2.5" fill="white"/>
+          </svg>
+        </div>
+        <h1>GYM <span class="accent">CÚCUTA</span></h1>
+        <p class="login-subtitle">SISTEMA DE GESTIÓN DEPORTIVA</p>
+      </div>
+
+      <!-- FORM LOGIN -->
+      <div id="formLogin" class="auth-form">
+        <div class="form-group">
+          <label>Correo Electrónico</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input type="email" id="loginEmail" placeholder="correo@ejemplo.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="loginPassword" placeholder="••••••••"/>
+          </div>
+        </div>
+        <div class="auth-error" id="loginError"></div>
+        <button class="btn-login" id="btnLogin">
+          <span id="btnLoginText">INGRESAR</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <p class="login-hint">Admin: admin@gymcucuta.com / Admin1234!</p>
+      </div>
+
+      <!-- FORM REGISTRO -->
+      <div id="formRegistro" class="auth-form" style="display:none;">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Nombre <span class="req">*</span></label>
+            <input type="text" id="regNombre" placeholder="Juan"/>
+          </div>
+          <div class="form-group">
+            <label>Apellido <span class="req">*</span></label>
+            <input type="text" id="regApellido" placeholder="Pérez"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Correo Electrónico <span class="req">*</span></label>
+          <div class="input-wrapper">
+            <span class="input-icon">📧</span>
+            <input type="email" id="regEmail" placeholder="correo@ejemplo.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Contraseña <span class="req">*</span></label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <div class="input-wrapper">
+            <span class="input-icon">📞</span>
+            <input type="tel" id="regTelefono" placeholder="300 123 4567"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Selecciona tu Rol <span class="req">*</span></label>
+          <div class="rol-selector">
+            <label class="rol-option">
+              <input type="radio" name="rol" value="cliente" checked/>
+              <div class="rol-card selected">
+                <span class="rol-icon">🏃</span>
+                <span class="rol-name">Cliente</span>
+                <span class="rol-desc">Acceso inmediato</span>
+              </div>
+            </label>
+            <label class="rol-option">
+              <input type="radio" name="rol" value="entrenador"/>
+              <div class="rol-card">
+                <span class="rol-icon">💪</span>
+                <span class="rol-name">Entrenador</span>
+                <span class="rol-desc">Requiere aprobación</span>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="auth-error" id="regError"></div>
+        <button class="btn-login" id="btnRegistro">
+          <span id="btnRegTexto">CREAR CUENTA</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════ APP SHELL ═══════ -->
+  <div id="appPage">
+    <nav class="navbar">
+      <div class="nav-brand">
+        <div class="brand-emblem">
+          <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
+            <rect x="13" y="22" width="22" height="4" rx="2" fill="white"/>
+            <rect x="4"  y="15" width="5"  height="18" rx="2.5" fill="white"/>
+            <rect x="10" y="18" width="3"  height="12" rx="1.5" fill="rgba(255,255,255,0.75)"/>
+            <rect x="35" y="18" width="3"  height="12" rx="1.5" fill="rgba(255,255,255,0.75)"/>
+            <rect x="39" y="15" width="5"  height="18" rx="2.5" fill="white"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h2>GYM <span class="accent">CÚCUTA</span></h2>
+          <span class="brand-sub">Panel de Gestión</span>
+        </div>
+      </div>
+
+      <div class="nav-links" id="navLinks">
+        <!-- Se genera dinámicamente según rol -->
+      </div>
+
+      <div class="nav-right">
+        <div class="nav-user">
+          <div class="user-avatar" id="navUserInit">U</div>
+          <div>
+            <div class="user-name"  id="navUserName">Usuario</div>
+            <div id="navUserRole"></div>
+          </div>
+        </div>
+        <button class="btn-logout" id="btnLogout">⏻ Salir</button>
+      </div>
+    </nav>
+
+    <main class="main-content" id="pageContent"></main>
+  </div>
+
+  <!-- MODAL EDITAR MIEMBRO -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>✏️ Editar Miembro</h3>
+        <button class="modal-close" id="btnCloseModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="field"><label>Nombres <span class="req">*</span></label><input type="text" id="e-nombres"/></div>
+          <div class="field"><label>Apellidos <span class="req">*</span></label><input type="text" id="e-apellidos"/></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>Teléfono</label><input type="text" id="e-telefono"/></div>
+          <div class="field"><label>Correo</label><input type="email" id="e-email"/></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>Plan</label>
+            <select id="e-plan">
+              <option>Mensual - $120.000</option><option>Trimestral - $320.000</option>
+              <option>Semestral - $580.000</option><option>Anual - $1.000.000</option>
+            </select>
+          </div>
+          <div class="field"><label>Estado</label>
+            <select id="e-estado"><option>Activo</option><option>Inactivo</option><option>Pendiente</option></select>
+          </div>
+        </div>
+        <div class="field"><label>Notas</label><textarea id="e-notas"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="btnCancelEdit">Cancelar</button>
+        <button class="btn btn-primary" id="btnSaveEdit">💾 Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span class="toast-icon" id="toastIcon">✅</span>
+    <span id="toastMsg">Operación exitosa</span>
+  </div>
+
+  <!-- JS: orden estricto -->
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/rbac.js"></script>
+  <script src="pages/inicio.js"></script>
+  <script src="pages/registro.js"></script>
+  <script src="pages/miembros.js"></script>
+  <script src="pages/informes.js"></script>
+  <script src="pages/eventos.js"></script>
+  <script src="pages/validacion.js"></script>
+  <script src="pages/soporte.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
