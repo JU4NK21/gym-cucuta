@@ -1,6 +1,3 @@
-/* ═══════════════════════════════════════
-   DATABASE.JS — better-sqlite3 (para Railway/Linux)
-═══════════════════════════════════════ */
 const Database = require('better-sqlite3');
 const path     = require('path');
 const bcrypt   = require('bcryptjs');
@@ -25,7 +22,6 @@ async function inicializar() {
       fecha_registro      TEXT NOT NULL DEFAULT (date('now')),
       fecha_actualizacion TEXT NOT NULL DEFAULT (datetime('now'))
     );
-
     CREATE TABLE IF NOT EXISTS solicitudes_entrenador (
       id              INTEGER PRIMARY KEY AUTOINCREMENT,
       usuario_id      INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -35,7 +31,6 @@ async function inicializar() {
       fecha_solicitud TEXT NOT NULL DEFAULT (datetime('now')),
       fecha_revision  TEXT
     );
-
     CREATE TABLE IF NOT EXISTS sesiones_log (
       id         INTEGER PRIMARY KEY AUTOINCREMENT,
       usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
@@ -48,16 +43,15 @@ async function inicializar() {
   const admin = db.prepare('SELECT id FROM usuarios WHERE email = ?').get('admin@gymcucuta.com');
   if (!admin) {
     const hash = bcrypt.hashSync('Admin1234!', 12);
-    db.prepare(`INSERT INTO usuarios (nombre, apellido, email, password_hash, rol, estado) VALUES (?,?,?,?,'admin','activo')`)
-      .run('Administrador', 'Principal', 'admin@gymcucuta.com', hash);
+    db.prepare(`INSERT INTO usuarios (nombre,apellido,email,password_hash,rol,estado) VALUES (?,?,?,?,'admin','activo')`)
+      .run('Administrador','Principal','admin@gymcucuta.com', hash);
     console.log('✅ Admin creado: admin@gymcucuta.com / Admin1234!');
   }
   console.log('✅ Base de datos lista');
 }
 
-// Helpers para mantener compatibilidad con código async existente
-db.get_ = (sql, params = []) => Promise.resolve(db.prepare(sql).get(...params));
-db.all_ = (sql, params = []) => Promise.resolve(db.prepare(sql).all(...params));
-db.run_ = (sql, params = []) => Promise.resolve(db.prepare(sql).run(...params));
+db.get_ = (sql, p=[]) => Promise.resolve(db.prepare(sql).get(...p));
+db.all_ = (sql, p=[]) => Promise.resolve(db.prepare(sql).all(...p));
+db.run_ = (sql, p=[]) => Promise.resolve(db.prepare(sql).run(...p));
 
 module.exports = { db, inicializar };

@@ -1,11 +1,10 @@
 {
   "name": "gym-cucuta",
   "version": "1.0.0",
-  "description": "App Gym Cúcuta",
+  "description": "App Gym Cúcuta - Sistema de Gestión",
   "main": "backend/server.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "build": "cd backend && npm install"
+    "start": "node backend/server.js"
   },
   "dependencies": {
     "express": "^4.18.2",

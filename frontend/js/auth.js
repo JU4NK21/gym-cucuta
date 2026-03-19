@@ -1,73 +1,48 @@
-/* ═══════════════════════════════════════
-   AUTH.JS — Servicio de autenticación
-═══════════════════════════════════════ */
 'use strict';
 
-/* Detecta automáticamente si está en local o en producción */
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:3000/api'
   : '/api';
 
 const Auth = (() => {
-
-  function guardarSesion(token, usuario) {
-    localStorage.setItem('gym_token',   token);
-    localStorage.setItem('gym_usuario', JSON.stringify(usuario));
-  }
-
-  function cerrarSesion() {
-    localStorage.removeItem('gym_token');
-    localStorage.removeItem('gym_usuario');
-  }
-
-  function getToken()   { return localStorage.getItem('gym_token'); }
-  function getUsuario() {
-    const u = localStorage.getItem('gym_usuario');
-    return u ? JSON.parse(u) : null;
-  }
-  function estaAutenticado() { return !!getToken() && !!getUsuario(); }
-  function getRol() { return getUsuario()?.rol || null; }
-
-  function headersAuth() {
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getToken()}`
-    };
-  }
+  const save  = (t,u) => { localStorage.setItem('gym_token',t); localStorage.setItem('gym_usuario',JSON.stringify(u)); };
+  const clear = ()    => { localStorage.removeItem('gym_token'); localStorage.removeItem('gym_usuario'); };
+  const token   = ()  => localStorage.getItem('gym_token');
+  const usuario = ()  => { try { return JSON.parse(localStorage.getItem('gym_usuario')); } catch { return null; } };
+  const autenticado = () => !!token() && !!usuario();
+  const rol   = ()    => usuario()?.rol || null;
+  const headers = ()  => ({ 'Content-Type':'application/json', 'Authorization':`Bearer ${token()}` });
 
   async function login(email, password) {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Error al iniciar sesión.');
-    guardarSesion(data.token, data.usuario);
-    return data;
+    const r = await fetch(`${API_URL}/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,password}) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Error al iniciar sesión.');
+    save(d.token, d.usuario);
+    return d;
   }
 
   async function registro(datos) {
-    const res = await fetch(`${API_URL}/auth/registro`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(datos)
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Error al registrarse.');
-    if (data.token) guardarSesion(data.token, data.usuario);
-    return data;
+    const r = await fetch(`${API_URL}/auth/registro`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(datos) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Error al registrarse.');
+    if (d.token) save(d.token, d.usuario);
+    return d;
   }
 
-  async function fetchAuth(endpoint, opciones = {}) {
-    const res = await fetch(`${API_URL}${endpoint}`, {
-      ...opciones,
-      headers: { ...headersAuth(), ...(opciones.headers || {}) }
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Error en la solicitud.');
-    return data;
+  async function fetchAuth(endpoint, opts={}) {
+    const r = await fetch(`${API_URL}${endpoint}`, { ...opts, headers:{ ...headers(), ...(opts.headers||{}) } });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Error en la solicitud.');
+    return d;
   }
 
-  return { login, registro, cerrarSesion, getToken, getUsuario, estaAutenticado, getRol, headersAuth, fetchAuth };
+  return {
+    login, registro, fetchAuth,
+    cerrarSesion: clear,
+    getToken:     token,
+    getUsuario:   usuario,
+    estaAutenticado: autenticado,
+    getRol:       rol,
+    headersAuth:  headers,
+  };
 })();

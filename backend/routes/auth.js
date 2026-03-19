@@ -1,9 +1,6 @@
-/* ═══════════════════════════════════════
-   ROUTES/AUTH
-═══════════════════════════════════════ */
-const express    = require('express');
-const router     = express.Router();
-const ctrl       = require('../controllers/authController');
+const express = require('express');
+const router  = express.Router();
+const ctrl    = require('../controllers/authController');
 const { verificarToken } = require('../middleware/auth');
 
 router.post('/registro', ctrl.registro);

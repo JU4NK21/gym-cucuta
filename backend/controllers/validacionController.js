@@ -1,57 +1,47 @@
-/* ═══════════════════════════════════════
-   CONTROLLERS/VALIDACION (sqlite3 async)
-═══════════════════════════════════════ */
 const { db } = require('../db/database');
 
 async function listarSolicitudes(req, res) {
   try {
-    const solicitudes = await db.all_(`
-      SELECT s.id, s.estado, s.fecha_solicitud, s.fecha_revision, s.motivo_rechazo,
-             u.id AS usuario_id, u.nombre, u.apellido, u.email, u.telefono, u.fecha_registro,
-             r.nombre AS revisado_por_nombre, r.apellido AS revisado_por_apellido
+    const s = db.prepare(`
+      SELECT s.*,u.nombre,u.apellido,u.email,u.telefono,u.fecha_registro,
+             r.nombre AS rev_nombre, r.apellido AS rev_apellido
       FROM solicitudes_entrenador s
-      JOIN usuarios u ON s.usuario_id = u.id
-      LEFT JOIN usuarios r ON s.revisado_por = r.id
+      JOIN usuarios u ON s.usuario_id=u.id
+      LEFT JOIN usuarios r ON s.revisado_por=r.id
       ORDER BY CASE s.estado WHEN 'pendiente' THEN 0 ELSE 1 END, s.fecha_solicitud DESC
-    `);
-    return res.json({ solicitudes });
-  } catch (err) { return res.status(500).json({ error: 'Error interno.' }); }
+    `).all();
+    return res.json({ solicitudes: s });
+  } catch(err) { return res.status(500).json({ error: 'Error interno.' }); }
 }
 
 async function aprobar(req, res) {
   try {
-    const { id } = req.params;
-    const sol = await db.get_('SELECT * FROM solicitudes_entrenador WHERE id = ?', [id]);
+    const sol = db.prepare('SELECT * FROM solicitudes_entrenador WHERE id=?').get(req.params.id);
     if (!sol) return res.status(404).json({ error: 'Solicitud no encontrada.' });
-    if (sol.estado !== 'pendiente') return res.status(400).json({ error: 'La solicitud ya fue procesada.' });
-
-    await db.run_(`UPDATE solicitudes_entrenador SET estado='aprobado', revisado_por=?, fecha_revision=datetime('now') WHERE id=?`, [req.usuario.id, id]);
-    await db.run_(`UPDATE usuarios SET estado='activo' WHERE id=?`, [sol.usuario_id]);
-
-    const u = await db.get_('SELECT nombre, apellido, email FROM usuarios WHERE id = ?', [sol.usuario_id]);
-    return res.json({ mensaje: `Entrenador ${u.nombre} ${u.apellido} aprobado exitosamente.`, usuario: u });
-  } catch (err) { return res.status(500).json({ error: 'Error interno.' }); }
+    if (sol.estado !== 'pendiente') return res.status(400).json({ error: 'Ya fue procesada.' });
+    db.prepare(`UPDATE solicitudes_entrenador SET estado='aprobado',revisado_por=?,fecha_revision=datetime('now') WHERE id=?`).run(req.usuario.id, req.params.id);
+    db.prepare(`UPDATE usuarios SET estado='activo' WHERE id=?`).run(sol.usuario_id);
+    const u = db.prepare('SELECT nombre,apellido FROM usuarios WHERE id=?').get(sol.usuario_id);
+    return res.json({ mensaje: `Entrenador ${u.nombre} ${u.apellido} aprobado.` });
+  } catch(err) { return res.status(500).json({ error: 'Error interno.' }); }
 }
 
 async function rechazar(req, res) {
   try {
-    const { id } = req.params;
-    const { motivo } = req.body;
-    const sol = await db.get_('SELECT * FROM solicitudes_entrenador WHERE id = ?', [id]);
+    const sol = db.prepare('SELECT * FROM solicitudes_entrenador WHERE id=?').get(req.params.id);
     if (!sol) return res.status(404).json({ error: 'Solicitud no encontrada.' });
-    if (sol.estado !== 'pendiente') return res.status(400).json({ error: 'La solicitud ya fue procesada.' });
-
-    await db.run_(`UPDATE solicitudes_entrenador SET estado='rechazado', revisado_por=?, fecha_revision=datetime('now'), motivo_rechazo=? WHERE id=?`, [req.usuario.id, motivo || 'Sin motivo', id]);
-    await db.run_(`UPDATE usuarios SET estado='rechazado' WHERE id=?`, [sol.usuario_id]);
+    if (sol.estado !== 'pendiente') return res.status(400).json({ error: 'Ya fue procesada.' });
+    db.prepare(`UPDATE solicitudes_entrenador SET estado='rechazado',revisado_por=?,fecha_revision=datetime('now'),motivo_rechazo=? WHERE id=?`).run(req.usuario.id, req.body.motivo||'Sin motivo', req.params.id);
+    db.prepare(`UPDATE usuarios SET estado='rechazado' WHERE id=?`).run(sol.usuario_id);
     return res.json({ mensaje: 'Solicitud rechazada.' });
-  } catch (err) { return res.status(500).json({ error: 'Error interno.' }); }
+  } catch(err) { return res.status(500).json({ error: 'Error interno.' }); }
 }
 
 async function estadisticas(req, res) {
   try {
-    const stats = await db.all_('SELECT estado, COUNT(*) AS total FROM solicitudes_entrenador GROUP BY estado');
-    return res.json({ stats });
-  } catch (err) { return res.status(500).json({ error: 'Error interno.' }); }
+    const s = db.prepare('SELECT estado,COUNT(*) AS total FROM solicitudes_entrenador GROUP BY estado').all();
+    return res.json({ stats: s });
+  } catch(err) { return res.status(500).json({ error: 'Error interno.' }); }
 }
 
 module.exports = { listarSolicitudes, aprobar, rechazar, estadisticas };
