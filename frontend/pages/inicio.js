@@ -283,30 +283,39 @@ const PageInicio = (() => {
 
       <div class="cliente-section-title">Novedades del gimnasio</div>
       <div class="cliente-noticias">
-        <div class="cliente-noticia">
-          <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&q=70" alt="Yoga"/>
+        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=v7AYKMP6rOE" target="_blank" rel="noopener noreferrer">
+          <div class="noticia-img-wrap">
+            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&q=70" alt="Yoga"/>
+            <div class="noticia-play-btn">▶</div>
+          </div>
           <div class="noticia-body">
             <span class="noticia-tag tag-blue">Clases</span>
             <h4>Nuevas clases de Yoga</h4>
             <p>Lunes y miércoles 6:00 AM con instructora certificada.</p>
           </div>
-        </div>
-        <div class="cliente-noticia">
-          <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=300&q=70" alt="Promo"/>
+        </a>
+        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=vc1E5CfRfos" target="_blank" rel="noopener noreferrer">
+          <div class="noticia-img-wrap">
+            <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=300&q=70" alt="Promo"/>
+            <div class="noticia-play-btn">▶</div>
+          </div>
           <div class="noticia-body">
             <span class="noticia-tag tag-green">Promo</span>
             <h4>Trae un amigo y gana</h4>
             <p>Refiere a un amigo y obtén 15 días gratis en tu membresía.</p>
           </div>
-        </div>
-        <div class="cliente-noticia">
-          <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=300&q=70" alt="Nutrición"/>
+        </a>
+        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=V4QB6vlFuB0" target="_blank" rel="noopener noreferrer">
+          <div class="noticia-img-wrap">
+            <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=300&q=70" alt="Nutrición"/>
+            <div class="noticia-play-btn">▶</div>
+          </div>
           <div class="noticia-body">
             <span class="noticia-tag tag-orange">Salud</span>
             <h4>Asesoría nutricional gratis</h4>
             <p>Cada viernes de 5–7 PM con nuestro nutricionista.</p>
           </div>
-        </div>
+        </a>
       </div>
     </div>`;
   }
@@ -363,5 +372,6 @@ const PageInicio = (() => {
     });
   }
 
+  
   return { getHTML, afterRender, refreshStats };
 })();
