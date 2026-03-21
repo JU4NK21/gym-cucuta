@@ -30,6 +30,8 @@ const PageMiembros = (() => {
           <option value="Pendiente">Pendientes</option>
         </select>
         <button class="btn btn-primary btn-sm" id="btnIrRegistro">➕ Nuevo</button>
+        <button class="btn btn-sm" id="btnExportExcel" style="background:linear-gradient(135deg,#16a34a,#15803d);color:white;">📊 Excel</button>
+        <button class="btn btn-sm" id="btnExportPDF" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:white;">📄 PDF</button>
       </div>
       <div id="tableContainer">
         <div class="empty-state"><div class="empty-icon">⏳</div><p>Cargando miembros...</p></div>
@@ -44,6 +46,77 @@ const PageMiembros = (() => {
     document.getElementById('searchInput')?.addEventListener('input', e => { _search = e.target.value.toLowerCase(); renderTabla(); });
     document.getElementById('filterStatus')?.addEventListener('change', e => { _filter = e.target.value; renderTabla(); });
     document.getElementById('btnIrRegistro')?.addEventListener('click', () => window._router?.navigate('registro-miembro'));
+    document.getElementById('btnExportExcel')?.addEventListener('click', exportarExcel);
+    document.getElementById('btnExportPDF')?.addEventListener('click', exportarPDF);
+  }
+
+  function getListaFiltrada() {
+    return _todos.filter(m => {
+      const q = _search;
+      const matchSearch = !q ||
+        `${m.nombres} ${m.apellidos}`.toLowerCase().includes(q) ||
+        (m.cedula||'').includes(q) ||
+        (m.email||'').toLowerCase().includes(q);
+      const matchFilter = !_filter || m.estado === _filter;
+      return matchSearch && matchFilter;
+    });
+  }
+
+  function exportarExcel() {
+    const lista = getListaFiltrada();
+    const encabezado = ['Nombres', 'Apellidos', 'Cédula', 'Teléfono', 'Email', 'Plan', 'Estado', 'Vence', 'Fecha Registro'];
+    const filas = lista.map(m => [
+      m.nombres||'', m.apellidos||'', m.cedula||'', m.telefono||'',
+      m.email||'', m.plan||'', m.estado||'', m.vence||'', m.fecha_registro||''
+    ]);
+    let csv = [encabezado, ...filas].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const bom = '\uFEFF';
+    const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `miembros_gym_cucuta_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+    showToast('📊 Excel exportado correctamente.');
+  }
+
+  function exportarPDF() {
+    const lista = getListaFiltrada();
+    const win = window.open('', '_blank');
+    win.document.write(`
+      <html><head><title>Miembros Gym Cúcuta</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 24px; color: #1e293b; }
+        h1 { color: #0ea5e9; margin-bottom: 4px; }
+        p.sub { color: #64748b; font-size: 13px; margin-bottom: 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: #0ea5e9; color: white; padding: 8px 10px; text-align: left; }
+        td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; }
+        tr:nth-child(even) td { background: #f8fafc; }
+        .activo { color: #16a34a; font-weight: bold; }
+        .inactivo { color: #dc2626; font-weight: bold; }
+        .pendiente { color: #d97706; font-weight: bold; }
+      </style></head><body>
+      <h1>🏋️ Gym Cúcuta — Lista de Miembros</h1>
+      <p class="sub">Generado el ${new Date().toLocaleDateString('es-CO')} · ${lista.length} miembros</p>
+      <table>
+        <thead><tr><th>#</th><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Plan</th><th>Estado</th><th>Vence</th></tr></thead>
+        <tbody>
+          ${lista.map((m,i) => `
+            <tr>
+              <td>${i+1}</td>
+              <td>${m.nombres} ${m.apellidos}</td>
+              <td>${m.cedula||'—'}</td>
+              <td>${m.telefono||'—'}</td>
+              <td>${(m.plan||'').split(' - ')[0]||'—'}</td>
+              <td class="${(m.estado||'').toLowerCase()}">${m.estado||'—'}</td>
+              <td>${m.vence||'—'}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+      </body></html>`);
+    win.document.close();
+    setTimeout(() => win.print(), 500);
+    showToast('📄 PDF listo para imprimir.');
   }
 
   async function cargarMiembros() {
