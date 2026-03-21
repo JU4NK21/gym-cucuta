@@ -283,7 +283,7 @@ const PageInicio = (() => {
 
       <div class="cliente-section-title">Novedades del gimnasio</div>
       <div class="cliente-noticias">
-        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=v7AYKMP6rOE" target="_blank" rel="noopener noreferrer">
+        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=qMzk83G5JgY" target="_blank" rel="noopener noreferrer">
           <div class="noticia-img-wrap">
             <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&q=70" alt="Yoga"/>
             <div class="noticia-play-btn">▶</div>
@@ -294,7 +294,7 @@ const PageInicio = (() => {
             <p>Lunes y miércoles 6:00 AM con instructora certificada.</p>
           </div>
         </a>
-        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=vc1E5CfRfos" target="_blank" rel="noopener noreferrer">
+        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=bxEcouOgCWY" target="_blank" rel="noopener noreferrer">
           <div class="noticia-img-wrap">
             <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=300&q=70" alt="Promo"/>
             <div class="noticia-play-btn">▶</div>
@@ -305,7 +305,7 @@ const PageInicio = (() => {
             <p>Refiere a un amigo y obtén 15 días gratis en tu membresía.</p>
           </div>
         </a>
-        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=v2PsH_HEHWI" target="_blank" rel="noopener noreferrer">
+        <a class="cliente-noticia" href="https://www.youtube.com/watch?v=ho5tVxBJWLA" target="_blank" rel="noopener noreferrer">
           <div class="noticia-img-wrap">
             <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=300&q=70" alt="Nutrición"/>
             <div class="noticia-play-btn">▶</div>
