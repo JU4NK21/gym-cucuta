@@ -61,12 +61,12 @@ const PageSoporte = (() => {
           <div class="soporte-card-arrow">→</div>
         </div>
 
-        <div class="soporte-card" onclick="showToast('💬 WhatsApp: +57 315 987 6543', 'info')">
+        <div class="soporte-card" onclick="window.open('https://wa.me/573143873575?text=Hola%2C%20necesito%20información%20sobre%20el%20gimnasio','_blank')">
           <div class="soporte-card-icon" style="background:linear-gradient(135deg,#22c55e,#15803d)">💬</div>
           <div class="soporte-card-body">
             <h3>WhatsApp</h3>
             <p>Chat inmediato · Disponible 24/7</p>
-            <span class="soporte-dato">+57 315 987 6543</span>
+            <span class="soporte-dato">+57 314 387 3575</span>
           </div>
           <div class="soporte-card-arrow">→</div>
         </div>
