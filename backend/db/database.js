@@ -1,21 +1,16 @@
 const { Pool } = require('pg');
-const bcrypt   = require('bcryptjs');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-  family: 4
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-async function query(sql, params = []) {
-  const client = await pool.connect();
-  try {
-    const result = await client.query(sql, params);
-    return result;
-  } finally {
-    client.release();
-  }
-}
+const query = (text, params) => pool.query(text, params);
+
+module.exports = { query };
+
 
 async function inicializar() {
   await query(`
