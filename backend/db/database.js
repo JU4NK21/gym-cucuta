@@ -3,7 +3,8 @@ const bcrypt   = require('bcryptjs');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
+  family: 4
 });
 
 async function query(sql, params = []) {
@@ -31,7 +32,6 @@ async function inicializar() {
       fecha_actualizacion TIMESTAMP NOT NULL DEFAULT NOW()
     );
   `);
-
   await query(`
     CREATE TABLE IF NOT EXISTS solicitudes_entrenador (
       id              SERIAL PRIMARY KEY,
@@ -43,7 +43,6 @@ async function inicializar() {
       fecha_revision  TIMESTAMP
     );
   `);
-
   await query(`
     CREATE TABLE IF NOT EXISTS sesiones_log (
       id         SERIAL PRIMARY KEY,
@@ -53,7 +52,6 @@ async function inicializar() {
       ip         TEXT
     );
   `);
-
   await query(`
     CREATE TABLE IF NOT EXISTS miembros_gym (
       id             SERIAL PRIMARY KEY,
