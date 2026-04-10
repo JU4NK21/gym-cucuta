@@ -8,6 +8,7 @@ const pool = new Pool({
   }
 });
 
+
 // Función para ejecutar consultas
 const query = (text, params) => pool.query(text, params);
 
