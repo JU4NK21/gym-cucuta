@@ -6,7 +6,7 @@ const pool = new Pool({
     rejectUnauthorized: false // Esto permite el certificado de Supabase
   }
 });
-
+//dsad
 const query = (text, params) => pool.query(text, params);
 
 module.exports = { query };
