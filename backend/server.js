@@ -41,8 +41,13 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-inicializar().then(() => {
-  app.listen(PORT, () => {
-    console.log(`\n🏋️  Gym Cúcuta en http://localhost:${PORT}\n`);
-  });
-}).catch(err => { console.error(err); process.exit(1); });
+
+// 1. Iniciamos el servidor de inmediato
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n🏋️  Gym Cúcuta encendido en puerto ${PORT}`);
+    
+    // 2. Intentamos conectar a la DB una vez que el servidor ya está arriba
+    inicializar()
+        .then(() => console.log("✅ Proceso de tablas completado"))
+        .catch(err => console.error("❌ Falló la inicialización de DB:", err.message));
+});
