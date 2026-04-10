@@ -1,10 +1,10 @@
 const { Pool } = require('pg');
-const bcrypt = require('bcrypt'); // 1. IMPORTANTE: Asegúrate de tener instalado bcrypt (npm install bcrypt)
+const bcrypt = require('bcrypt');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // Permite la conexión segura con Supabase
+    rejectUnauthorized: false
   }
 });
 
