@@ -1,8 +1,6 @@
 'use strict';
 
-const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000/api'
-  : '/api';
+const API_URL = 'https://gym-cucuta-fykh.onrender.com/api';
 
 const Auth = (() => {
   const save  = (t,u) => { localStorage.setItem('gym_token',t); localStorage.setItem('gym_usuario',JSON.stringify(u)); };
